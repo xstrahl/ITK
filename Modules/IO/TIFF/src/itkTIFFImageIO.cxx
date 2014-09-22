@@ -345,7 +345,7 @@ void TIFFImageIO::ReadTiles(void *buffer)
             }
           }
         }
-      delete tempImage;
+      delete[] tempImage;
       }
     }
 }
