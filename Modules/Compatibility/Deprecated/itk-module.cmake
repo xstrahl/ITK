@@ -1,11 +1,15 @@
 set(DOCUMENTATION "This is a collection of classes that are intended to be
 removed from the toolkit.")
 
-if(NOT ITKV3_COMPATIBILITY ) ## Deprecated code only work with ITKV3_COMPATIBILITY
+# XXX Slicer - By commenting the following lines, we ensure that ITKDeprecated
+#              will be disabled independently of ITKV3_COMPATIBILITY value.
+#              See http://na-mic.org/Mantis/view.php?id=3830
+
+#if(NOT ITKV3_COMPATIBILITY ) ## Deprecated code only work with ITKV3_COMPATIBILITY
   set(EXCLUDE_DEPRECATED_LEGACY_CODE "EXCLUDE_FROM_DEFAULT")
-else()
-  set(EXCLUDE_DEPRECATED_LEGACY_CODE "")
-endif()
+#else()
+#  set(EXCLUDE_DEPRECATED_LEGACY_CODE "")
+#endif()
 itk_module(ITKDeprecated
   DEPENDS
     ITKV3Compatibility      ## Note: Deprecated requires the ITKV3 compatibility layer
