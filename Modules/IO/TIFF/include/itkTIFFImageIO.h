@@ -69,9 +69,6 @@ public:
   /** Reads 3D data from multi-pages tiff. */
   virtual void ReadVolume(void *buffer);
 
-  /** Reads 3D data from tiled tiff. */
-  virtual void ReadTiles(void *buffer);
-
   /*-------- This part of the interfaces deals with writing data. ----- */
 
   /** Determine the file type. Returns true if this ImageIO can read the
@@ -141,19 +138,17 @@ protected:
   void InitializeColors();
 
   void ReadGenericImage(void *out,
-                        unsigned int itkNotUsed(width),
+                        unsigned int width,
                         unsigned int height);
 
   // To support Zeiss images
   void ReadTwoSamplesPerPixelImage(void *out,
-                                   unsigned int itkNotUsed(width),
+                                   unsigned int width,
                                    unsigned int height);
-
-  int EvaluateImageAt(void *out, void *in);
 
   unsigned int  GetFormat();
 
-  void GetColor(int index, unsigned short *red,
+  void GetColor(unsigned int index, unsigned short *red,
                 unsigned short *green, unsigned short *blue);
 
   // Check that tag t can be found
@@ -164,12 +159,45 @@ protected:
 
   TIFFReaderInternal *m_InternalImage;
 
+  void ReadTIFFTags();
+
   int m_Compression;
   int m_JPEGQuality;
 
 private:
   TIFFImageIO(const Self &);    //purposely not implemented
   void operator=(const Self &); //purposely not implemented
+
+  void ReadCurrentPage(void *out, size_t pixelOffset);
+
+  template <typename TComponent>
+  void ReadGenericImage(void *out,
+                        unsigned int width,
+                        unsigned int height);
+
+  template <typename TComponent>
+    void RGBAImageToBuffer( void *out, const uint32_t *tempImage );
+
+  template <typename TType>
+    void PutGrayscale( TType *to, TType * from,
+                       unsigned int xsize, unsigned int ysize,
+                       unsigned int toskew, unsigned int fromskew );
+
+  template <typename TType>
+    void PutRGB_( TType *to, TType * from,
+                  unsigned int xsize, unsigned int ysize,
+                  unsigned int toskew, unsigned int fromskew );
+
+
+  template <typename TType, typename TFromType>
+    void PutPaletteGrayscale( TType *to, TFromType * from,
+                              unsigned int xsize, unsigned int ysize,
+                              unsigned int toskew, unsigned int fromskew );
+
+  template <typename TType, typename TFromType>
+    void PutPaletteRGB( TType *to, TFromType * from,
+                        unsigned int xsize, unsigned int ysize,
+                        unsigned int toskew, unsigned int fromskew );
 
   unsigned short *m_ColorRed;
   unsigned short *m_ColorGreen;
