@@ -748,23 +748,34 @@ itkTypeMacro(newexcp, parentexcp);                                              
 template <typename TTarget, typename TSource>
 TTarget itkDynamicCastInDebugMode(TSource x)
 {
-#ifndef NDEBUG
-  if(x == 0)
-    {
-    return 0;
-    }
-  TTarget rval = dynamic_cast<TTarget>(x);
-  if(rval == 0)
-    {
-    itkGenericExceptionMacro(<< "Failed dynamic cast to "
-                             << typeid(TTarget).name()
-                             << " object type = "
-                             << x->GetNameOfClass());
-    }
-  return rval;
-#else
+//#ifndef NDEBUG
+//  if(x == 0)
+//    {
+//    return 0;
+//    }
+//  TTarget rval = dynamic_cast<TTarget>(x);
+//  if(rval == 0)
+//    {
+//    itkGenericExceptionMacro(<< "Failed dynamic cast to "
+//                             << typeid(TTarget).name()
+//                             << " object type = "
+//                             << x->GetNameOfClass());
+//    }
+//  return rval;
+//#else
+  // Waiting these two patches are integrated into upstream ITK, we use
+  // static_cast for both Release and Debug:
+  //
+  // * WIP: Add SafeDownCast to LightObject classes
+  //   http://review.source.kitware.com/#/c/21499/
+  //
+  // * ENH: Add tests to demonstrate OSX dynamic_cast failure
+  //   http://review.source.kitware.com/#/c/21755/
+  //
+  // Details reported here: https://issues.itk.org/jira/browse/ITK-3490
+  //
   return static_cast<TTarget>(x);
-#endif
+//#endif
 }
 
 //  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
